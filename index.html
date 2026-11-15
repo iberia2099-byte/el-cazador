@@ -69,6 +69,18 @@ var BG=[
 ];
 var HER=["Ileso","Magullado","Herido","Malherido","Moribundo"];
 var S=null,sel=null,pend=null,busy=false;
+
+try {
+ var partida=localStorage.getItem("cazador");
+ if(partida){
+  var guardada=JSON.parse(partida);
+  if(guardada && guardada.nombre && Array.isArray(guardada.hist)){
+   S=guardada;
+  }
+ }
+} catch(e) {
+ S=null;
+}
 var $=function(i){return document.getElementById(i)};
 var SYS=`Eres el Narrador de un juego de rol de texto de grim fantasy (tono The Witcher): sobrio, sensorial, moral gris, mundo hostil y supersticioso, magia rara y con precio. El jugador es un cazador de monstruos a sueldo.
 REGLAS: narra en segunda persona y presente, 80-150 palabras, sin humor moderno. Nunca decidas acciones, palabras o pensamientos del jugador; termina donde deba actuar. Ninguna opción es claramente buena; toda decisión cuesta algo. Los PNJ mienten y tienen motivos propios. El peligro es real. Respeta el ESTADO: no inventes objetos ni habilidades que no consten.
