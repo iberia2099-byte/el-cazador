@@ -102,7 +102,16 @@ function sheet(){
  $("sheet").innerHTML="<p><b>"+S.nombre+"</b>, "+S.bg+"<br>Fuerza "+a.fuerza+" · Agilidad "+a.agilidad+" · Astucia "+a.astucia+" · Voluntad "+a.voluntad+"</p><p>Estado: "+HER[S.heridas]+"<br>Lugar: "+S.ubicacion+"<br>Equipo: "+(S.inv.join(", ")||"nada")+"<br>Reputación: "+(Object.keys(S.rep).map(function(k){return k+" "+S.rep[k]}).join(", ")||"nadie te conoce")+"</p>";
 }
 function add(txt,cls){var d=document.createElement("div");d.className="m "+(cls||"");d.textContent=txt;$("log").appendChild(d);d.scrollIntoView({block:"nearest"});return d}
-function clean(t){return t.replace(/<estado[\s\S]*$/,"").replace(/<tirada[\s\S]*$/,"").trim()}
+if(S){
+ $("start").hidden=true;
+ $("game").hidden=false;
+ sheet();
+ $("log").innerHTML="";
+ (S.hist||[]).forEach(function(h){
+  add(h.t,h.r==="j"?"me":"");
+ });
+}
+ function clean(t){return t.replace(/<estado[\s\S]*$/,"").replace(/<tirada[\s\S]*$/,"").trim()}
 
 function prompt(user){
  var h=S.hist.slice(-8).map(function(m){return (m.r==="n"?"NARRADOR: ":"JUGADOR: ")+m.t}).join("\n");
