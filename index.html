@@ -55,6 +55,13 @@ summary{cursor:pointer}
 <div id="log"></div>
 <div id="roll"></div>
 <div class="row"><input id="act" placeholder="¿Qué haces?"><button id="send">Actuar</button></div>
+<div class="row">
+<button id="saveGame">Guardar partida</button>
+<button id="exportGame">Descargar partida</button>
+ <button id="importGame">Cargar partida</button>
+<input id="importFile" type="file" accept=".json,application/json" hidden>
+</div>
+<p id="saveStatus" class="sys"></p>
 <p id="err2" class="sys"></p>
 </section>
 </main>
@@ -96,6 +103,77 @@ BG.forEach(function(b){
 });
 
 function save(){try{localStorage.setItem("cazador",JSON.stringify(S))}catch(e){}}
+ $("saveGame").onclick=function(){
+ if(!S)return;
+ save();
+ $("saveStatus").textContent="Partida guardada correctamente.";
+};
+
+$("exportGame").onclick=function(){
+ if(!S)return;
+ var copia={
+  juego:"El Cazador",
+  fecha:new Date().toISOString(),
+  partida:S
+ };
+ var archivo=new Blob(
+  [JSON.stringify(copia,null,2)],
+  {type:"application/json"}
+ );
+ var enlace=document.createElement("a");
+ enlace.href=URL.createObjectURL(archivo);
+ enlace.download="El-Cazador-"+S.nombre+".json";
+ enlace.click();
+ URL.revokeObjectURL(enlace.href);
+ $("saveStatus").textContent="Copia descargada.";
+};
+ $("importGame").onclick=function(){
+ $("importFile").click();
+};
+
+$("importFile").onchange=function(){
+ var archivo=this.files[0];
+ if(!archivo)return;
+
+ var lector=new FileReader();
+
+ lector.onload=function(){
+  try{
+   var datos=JSON.parse(lector.result);
+   var partida=datos.partida||datos;
+
+   if(!partida.nombre ||
+      !Array.isArray(partida.hist) ||
+      !partida.a ||
+      !Array.isArray(partida.inv)){
+    throw new Error("Archivo de partida no válido");
+   }
+
+   S=partida;
+   pend=null;
+   $("start").hidden=true;
+   $("game").hidden=false;
+   $("log").innerHTML="";
+   $("roll").innerHTML="";
+
+   S.hist.forEach(function(h){
+    add(h.t,h.r==="j"?"me":"");
+   });
+
+   sheet();
+   var escena=document.createElement("div");
+drawScene(S.esc,escena);
+$("log").appendChild(escena);
+   save();
+   $("saveStatus").textContent="Partida cargada correctamente: "+S.nombre;
+  }catch(e){
+   $("saveStatus").textContent="No se pudo cargar: archivo no válido.";
+  }
+ };
+
+ lector.readAsText(archivo);
+ this.value="";
+};
 function sheet(){
  var a=S.a;
  $("sum").textContent=S.nombre+" · "+HER[S.heridas]+" · "+S.monedas+" monedas";
