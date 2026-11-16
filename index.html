@@ -198,11 +198,43 @@ if(S){
 }
  function clean(t){return t.replace(/<estado[\s\S]*$/,"").replace(/<tirada[\s\S]*$/,"").trim()}
 
+
 function prompt(user){
- var h=S.hist.slice(-8).map(function(m){return (m.r==="n"?"NARRADOR: ":"JUGADOR: ")+m.t}).join("\n");
- var est={nombre:S.nombre,trasfondo:S.bg,atributos:S.a,salud:HER[S.heridas],monedas:S.monedas,inventario:S.inv,reputacion:S.rep,ubicacion:S.ubicacion};
- return SYS+"\n\nESTADO: "+JSON.stringify(est)+"\nRESUMEN HASTA AHORA: "+(S.res.slice(-12).join(" ")||"(inicio)")+"\n\nÚLTIMOS TURNOS:\n"+h+"\n\nJUGADOR: "+user+"\n\nResponde como NARRADOR.";
+ var h=S.hist.slice(-16).map(function(m){
+  return (m.r==="n"?"NARRADOR: ":"JUGADOR: ")+m.t
+ }).join("\n");
+
+ var est={
+  nombre:S.nombre,
+  trasfondo:S.bg,
+  atributos:S.a,
+  salud:HER[S.heridas],
+  monedas:S.monedas,
+  inventario:S.inv,
+  reputacion:S.rep,
+  ubicacion:S.ubicacion,
+  escena:S.esc||null,
+  tirada_pendiente:pend||null
+ };
+
+ return SYS+
+ "\n\nESTADO ACTUAL DEL PERSONAJE:\n"+
+ JSON.stringify(est)+
+ "\n\nRESUMEN DE LA AVENTURA:\n"+
+ (S.res.slice(-20).join(" ")||"(inicio)")+
+ "\n\nHISTORIAL RECIENTE:\n"+
+ h+
+ "\n\nINSTRUCCIONES DE CONTINUIDAD:\n"+
+ "Continúa exactamente desde el último acontecimiento. "+
+ "No reinicies la aventura ni repitas escenas, conversaciones o "+
+ "presentaciones ya realizadas. Respeta los personajes conocidos, "+
+ "las decisiones del jugador, el inventario, las heridas, las monedas "+
+ "y la ubicación actual. Mantén la coherencia con todo el historial "+
+ "y el estado proporcionado.\n\n"+
+ "JUGADOR: "+user+
+ "\n\nResponde como NARRADOR.";
 }
+
 function offlineResponse(user){
  var first=S.hist.length===0;
  var place=S.ubicacion||"el camino";
