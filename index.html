@@ -161,10 +161,7 @@ $("importFile").onchange=function(){
    });
 
    sheet();
-if(S.esc){
- var escena=document.createElement("div");
-$("log").appendChild(drawScene(S.esc,escena));
-}
+
    save();
    $("saveStatus").textContent="Partida cargada correctamente: "+S.nombre;
   }catch(e){
