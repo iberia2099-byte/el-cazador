@@ -161,9 +161,11 @@ $("importFile").onchange=function(){
    });
 
    sheet();
-   var escena=document.createElement("div");
-drawScene(S.esc,escena);
-$("log").appendChild(escena);
+if(S.esc){
+ var escena=document.createElement("div");
+ drawScene(S.esc,escena);
+ $("log").appendChild(escena);
+}
    save();
    $("saveStatus").textContent="Partida cargada correctamente: "+S.nombre;
   }catch(e){
@@ -188,6 +190,11 @@ if(S){
  (S.hist||[]).forEach(function(h){
   add(h.t,h.r==="j"?"me":"");
  });
+  if(S.esc){
+  var escena=document.createElement("div");
+  drawScene(S.esc,escena);
+  $("log").appendChild(escena);
+ }
 }
  function clean(t){return t.replace(/<estado[\s\S]*$/,"").replace(/<tirada[\s\S]*$/,"").trim()}
 
