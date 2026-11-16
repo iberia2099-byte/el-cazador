@@ -163,8 +163,7 @@ $("importFile").onchange=function(){
    sheet();
 if(S.esc){
  var escena=document.createElement("div");
- drawScene(S.esc,escena);
- $("log").appendChild(escena);
+$("log").appendChild(drawScene(S.esc,escena));
 }
    save();
    $("saveStatus").textContent="Partida cargada correctamente: "+S.nombre;
@@ -190,7 +189,7 @@ if(S){
  (S.hist||[]).forEach(function(h){
   add(h.t,h.r==="j"?"me":"");
  });
-  if(S.esc){
+  
   var escena=document.createElement("div");
   drawScene(S.esc,escena);
   $("log").appendChild(escena);
